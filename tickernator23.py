@@ -1,21 +1,23 @@
 from time import sleep
-# from utils.octopus import disp7_init
-from display7_init import disp7_init, disp7_pause, DISPLAY_INTENSITY
-from utils.octopus_api import bitcoin_usd
-# from utils.octopus_lib import w
-from utils.wifi_connect import WiFiConnect
-from ntptime import settime
 from machine import RTC
+from display7_init import disp7_init, disp7_pause, show_moving, DISPLAY_INTENSITY
+from utils.wifi_connect import WiFiConnect
+from tickernator_lib import __version__, time_init, add0, get_hh_mm_ss, bitcoin_usd
+
 
 DELAY_BTC = 20 # 15 sec.
 
-print("ticker23 - init")
+print("--- Tickernator23 ---")
+print("lib. version:",__version__)
 
+print("[Display init]")
 d7 = disp7_init()   # 8 x 7segment display init
 d7.write_to_buffer('octopus')
 d7.display()
 sleep(3)
+disp7_pause(d7)
 
+print("[WiFi connect]")
 net = WiFiConnect()
 net.connect()
 d7.intensity = DISPLAY_INTENSITY 
@@ -23,42 +25,18 @@ d7.show("WiFi")
 sleep(3)
 
 if not net.isconnected():
-    # hard reconect
-    net.sta_if.disconnect()
+    net.sta_if.disconnect() # hard reconect
     net.connect()
 
-
-def add0(sn): # 1 > 01 - TODO better;)
-    ret_str=str(sn)
-    if int(sn)<10:
-       ret_str = "0"+str(sn)
-    return ret_str
+rtc = time_init(2)
 
 
-def get_hh_mm_ss(rtc):
-    hh=add0(rtc.datetime()[4])
-    mm=add0(rtc.datetime()[5])
-    ss=add0(rtc.datetime()[6])
-    return hh+"-"+mm+"-"+ss
-
-def show_moving(d7, txt):
-    for i in range(5):
-         d7.show(txt[:i])
-         sleep(0.2)
-
-
-# time_init
-rtc = RTC()
-settime() # if wifi.on
-print("--- time: " + get_hh_mm_ss(rtc)) 
-
-
-
+# =================== main loop ==========
 while True:
     btc = bitcoin_usd()
     print(btc)
     #disp7_pause(d7)
-    show_moving(d7,str(btc))
+    show_moving(d7,str(int(btc)))
     
     for i in range(3):
         d7.show(str(int(btc)))
@@ -69,4 +47,3 @@ while True:
         for t in range(10):
             d7.show(get_hh_mm_ss(rtc))
             sleep(1)
-        
