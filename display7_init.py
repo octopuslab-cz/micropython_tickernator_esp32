@@ -1,16 +1,25 @@
 from time import sleep
 from machine import Pin, SPI
 from components.display7 import Display7
-from utils.pinout import set_pinout
-from utils.octopus_lib import spi_init
+
+
+#I2C:
+I2C_SCL_PIN = const(22)
+I2C_SDA_PIN = const(21)
+
+# SPI:
+SPI_CLK_PIN  = const(18)
+SPI_MISO_PIN = const(19)
+SPI_MOSI_PIN = const(23)
+SPI_CS0_PIN  = const(5)
 
 DISPLAY_INTENSITY = 2 # 6 default
 
-pinout = set_pinout()
-spi = spi_init()
 
-ss = Pin(pinout.SPI_CS0_PIN, Pin.OUT)
-#spi.deinit() #print("spi > close")
+# spi_init
+spi = SPI(1, baudrate=10000000, polarity=1, phase=0, sck=Pin(SPI_CLK_PIN), mosi=Pin(SPI_MOSI_PIN))
+ss = Pin(SPI_CS0_PIN, Pin.OUT)
+
 
 def disp7_init():
     d7 = None
