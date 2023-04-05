@@ -23,10 +23,17 @@ def disp7_init():
     return d7
 
 
-def disp7_pause(d7, ch = "-", sl = 0.1):
+def disp7_pause(d7,ch="-",sl=0.1):
     d7.intensity = 7
     for i in range(9):
         #print(i, ch*i)
         d7.show(ch*i)
         sleep(sl)
     d7.intensity = DISPLAY_INTENSITY
+
+
+# simple "moving text" - max. displ. size (8)
+def show_moving(d7,txt):
+    for i in range(len(txt)):
+         d7.show(txt[:i])
+         sleep(0.2)
