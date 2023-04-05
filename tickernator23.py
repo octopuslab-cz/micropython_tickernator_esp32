@@ -3,12 +3,36 @@ from machine import RTC
 from display7_init import disp7_init, disp7_pause, show_moving, DISPLAY_INTENSITY
 from utils.wifi_connect import WiFiConnect
 from tickernator_lib import __version__, time_init, add0, get_hh_mm_ss, bitcoin_usd
+from config import Config
 
-
-DELAY_BTC = 20 # 15 sec.
 
 print("--- Tickernator23 ---")
 print("lib. version:",__version__)
+
+
+c_intensity = DISPLAY_INTENSITY
+c_timezone = 1
+
+keys = ["ver","intensity","timezone"]
+try:
+    conf = Config("ticker",keys)
+    c_ver = conf.get("ver")     # config version
+    c_intensity = conf.get("intensity")
+    c_timezone = conf.get("timezone")
+except:
+    print("err: read config - exist?")
+
+print("-"*20)
+print("[Config]")
+print("-"*20)
+print("ver",c_ver)
+print("intensity",c_intensity)
+print("timezone",c_timezone)
+print("-"*20)
+
+DELAY_BTC = 20 # 15 sec.
+DISPLAY_INTENSITY = c_intensity
+
 
 print("[Display init]")
 d7 = disp7_init()   # 8 x 7segment display init
@@ -28,7 +52,7 @@ if not net.isconnected():
     net.sta_if.disconnect() # hard reconect
     net.connect()
 
-rtc = time_init(2)
+rtc = time_init(c_timezone)
 
 
 # =================== main loop ==========
