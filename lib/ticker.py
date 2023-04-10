@@ -9,7 +9,7 @@ from config import Config
 # from components.led import Led
 # from components.rgb import Rgb
 # from components.analog import Analog
-# from utils.octopus_lib import i2c_init
+from utils.octopus_lib import getFree, getUid, add0 
 from components.display7 import Display7
 from machine import RTC
 import urequests, json
@@ -24,6 +24,7 @@ class Ticker:
     def __init__(self, hw=2):
         if DEBUG: print("[init] class constructor")
         self.hw = hw # hw ver 1+ / 2config
+        self.uid = getUid()
         
         #I2C:
         self.I2C_SCL_PIN = const(22)
@@ -63,6 +64,8 @@ class Ticker:
         print("-"*26)
         print("--- ticker json config ---")
         print("class ticker ver.", __version__)
+        print("uID:",self.uid)
+        getFree(True)
         print("-"*26)
         print("  version    ", self.ver)
         print("  intensity  ", self.intensity)
@@ -151,13 +154,13 @@ def time_init(zone=1):
     print("--- time: " + get_hh_mm_ss(rtc))
     return rtc
 
-
+"""
 def add0(sn): # 1 > 01 - TODO better;)
     ret_str=str(sn)
     if int(sn)<10:
        ret_str = "0"+str(sn)
     return ret_str
-
+"""
 
 def get_hh_mm_ss(rtc):
     hh=add0(rtc.datetime()[4])
@@ -174,6 +177,10 @@ def show_moving(d7, txt):
 
 # note: 10-20 sec. pause is required
 def bitcoin_usd():
-    res = urequests.get("https://api.coinpaprika.com/v1/tickers/btc-bitcoin")
-    btcusd = res.json()['quotes']["USD"]["price"]
+    btcusd = 666
+    try:
+        res = urequests.get("https://api.coinpaprika.com/v1/tickers/btc-bitcoin")
+        btcusd = res.json()['quotes']["USD"]["price"]
+    except:
+        print("err: bitcoin_usd API / wifi connect?")
     return float(btcusd)
