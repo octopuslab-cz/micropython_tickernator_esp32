@@ -1,45 +1,28 @@
 from time import sleep
-from machine import RTC
-from display7_init import disp7_init, disp7_pause, show_moving, DISPLAY_INTENSITY
+from ticker import Ticker
+from ticker import time_init, bitcoin_usd, get_hh_mm_ss, disp7_pause, show_moving
+from components.display7 import Display7
 from utils.wifi_connect import WiFiConnect
-from tickernator_lib import __version__, time_init, add0, get_hh_mm_ss, bitcoin_usd
-from config import Config
 
 
-print("--- Tickernator23 ---")
-print("lib. version:",__version__)
-
-
-c_intensity = DISPLAY_INTENSITY
-c_timezone = 1
-
-keys = ["ver","intensity","timezone"]
-try:
-    conf = Config("ticker",keys)
-    c_ver = conf.get("ver")     # config version
-    c_intensity = conf.get("intensity")
-    c_timezone = conf.get("timezone")
-except:
-    print("err: read config - exist?")
-
-print("-"*20)
-print("[Config]")
-print("-"*20)
-print("ver",c_ver)
-print("intensity",c_intensity)
-print("timezone",c_timezone)
-print("-"*20)
+print("OctopusLAB - bitcoin tickernator")
+t = Ticker()
 
 DELAY_BTC = 20 # 15 sec.
-DISPLAY_INTENSITY = c_intensity
+DISPLAY_INTENSITY = t.intensity
 
+t.print_config_info()
+spi, ss = t.spi_init()
 
 print("[Display init]")
-d7 = disp7_init()   # 8 x 7segment display init
+d7 = Display7(spi, ss) # 8 x 7segment display init
+
 d7.write_to_buffer('octopus')
 d7.display()
 sleep(3)
+d7.intensity = 7
 disp7_pause(d7)
+d7.intensity = DISPLAY_INTENSITY
 
 print("[WiFi connect]")
 net = WiFiConnect()
@@ -52,7 +35,7 @@ if not net.isconnected():
     net.sta_if.disconnect() # hard reconect
     net.connect()
 
-rtc = time_init(c_timezone)
+rtc = time_init(t.timezone)
 
 
 # =================== main loop ==========
