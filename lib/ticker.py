@@ -1,6 +1,6 @@
-# octopusLAB - class Ticker
-__version__ = "0.3.2" # 9.4.2023
-# HW ESP32 + display7
+# (c) OctopusLAB 2016-23 - class Ticker
+__version__ = "2.0.0"
+# HW ESP32 + display8
 
 from machine import Pin, SPI #, I2C
 from time import sleep, sleep_ms
@@ -9,8 +9,8 @@ from config import Config
 # from components.led import Led
 # from components.rgb import Rgb
 # from components.analog import Analog
-from utils.octopus_lib import getFree, getUid, add0 
-from components.display7 import Display7
+from octopus_lib import getFree, getUid, add0 
+from components.display8 import Display8
 from machine import RTC
 import urequests, json
 from ntptime import settime
@@ -126,17 +126,17 @@ def disp7_init(spi,ss):
     return d7
 """
 
-def disp7_pause(d7,ch="-",sl=0.1):
+def disp8_pause(d8,ch="-",sl=0.1):
     for i in range(9):
         #print(i, ch*i)
-        d7.show(ch*i)
+        d8.show(ch*i)
         sleep(sl)    
 
 
 # simple "moving text" - max. displ. size (8)
-def show_moving(d7,txt):
+def show_moving(d8,txt):
     for i in range(len(txt)):
-         d7.show(txt[:i])
+         d8.show(txt[:i])
          sleep(0.2)
 
 
@@ -169,9 +169,9 @@ def get_hh_mm_ss(rtc):
     return hh+"-"+mm+"-"+ss
 
 
-def show_moving(d7, txt):
+def show_moving(d8, txt):
     for i in range(len(txt)):
-         d7.show(txt[:i])
+         d8.show(txt[:i])
          sleep(0.2)
 
 
