@@ -1,5 +1,5 @@
 # (c) OctopusLAB 2016-23 - class Ticker
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 # HW ESP32 + display8
 
 from machine import Pin, SPI #, I2C
@@ -7,8 +7,6 @@ from time import sleep, sleep_ms
 from micropython import const
 from config import Config
 # from components.led import Led
-# from components.rgb import Rgb
-# from components.analog import Analog
 from octopus_lib import getFree, getUid, add0 
 from components.display8 import Display8
 from machine import RTC
@@ -37,12 +35,6 @@ class Ticker:
         self.SPI_CS0_PIN  = const(5)
         
         self.DISPLAY_INTENSITY = 2 # 6 default
-                
-        # pinout - ADC
-        self.PIN_A0 = const(35) # NTC
-        self.PIN_A1 = const(34) # 32
-        self.PIN_A2 = const(39) # 33 # ad voltage
-        self.PIN_A3 = const(33) # PWM_IN 39>33
         
         # pinout - RGB-WS
         self.PIN_WS = const(25)
@@ -84,19 +76,6 @@ class Ticker:
         self.conf.set("timezone",self.timezone)
         self.conf.set("note",self.note)        
         self.conf.save() # save the configuration file with the new settings
-    
-    
-    def init_ir(self):
-        print("- ir-temp")
-        print("-- i2c_init - sensor")
-        self.sensor = None
-        try:
-            i2c = i2c_init()
-            sleep(0.5)
-            self.sensor = mlx90614.MLX90614(i2c)
-        except:
-            print("err: i2c IR sensor - connect?")
-        return self.sensor
     """
     
     def spi_init(self):
@@ -115,15 +94,6 @@ def i2c_init(HW_or_SW=0,freq=100000):
     # HW_or_SW: HW 0 | SW 1
     i2c = I2C(HW_or_SW, scl=Pin(I2C_SCL_PIN), sda=Pin(I2C_SDA_PIN), freq=freq)
     return i2c
-
-
-def disp7_init(spi,ss):
-    d7 = None
-    try:
-        d7 = Display7(spi, ss) # 8 x 7segment display init
-    except:
-        print("Err. Display7 init")
-    return d7
 """
 
 def disp8_pause(d8,ch="-",sl=0.1):
@@ -154,13 +124,6 @@ def time_init(zone=1):
     print("--- time: " + get_hh_mm_ss(rtc))
     return rtc
 
-"""
-def add0(sn): # 1 > 01 - TODO better;)
-    ret_str=str(sn)
-    if int(sn)<10:
-       ret_str = "0"+str(sn)
-    return ret_str
-"""
 
 def get_hh_mm_ss(rtc):
     hh=add0(rtc.datetime()[4])
