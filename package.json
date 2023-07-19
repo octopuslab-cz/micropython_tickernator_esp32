@@ -2,7 +2,8 @@
   "urls": [
   ["main.py", "github:octopuslab-cz/micropython_tickernator_esp32/main.py"], 
   ["tickernator23.py", "github:octopuslab-cz/micropython_tickernator_esp32/tickernator23.py"], 
-  ["lib/tickernator.py", "github:octopuslab-cz/micropython_tickernator_esp32/lib/tickernator.py"], 
+  ["lib/ticker.py", "github:octopuslab-cz/micropython_tickernator_esp32/lib/ticker.py"], 
+  ["config/device.json", "github:octopuslab-cz/micropython_tickernator_esp32/config/device.json"], 
  
   ],
   "deps": [
