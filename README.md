@@ -19,17 +19,8 @@ https://micropython.org/resources/firmware/esp32-20230426-v1.20.0.bin
 ## Deploy (mip):
 
 ```
-from time import sleep
-import network
 import mip
-
-wlan = network.WLAN(network.STA_IF)
-wlan.active(True)
-sleep(5)
-
-print("wifi connect")
-wlan.connect('ssid', 'password')
-sleep(5)
+# wlan.connect('ssid', 'password')
 
 mip.install("github:octopuslab-cz/micropython_tickernator_esp32", target=".")
 ```
